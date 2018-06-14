@@ -6,8 +6,11 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import com.rolandoamarillo.demo.posts.R
 import com.rolandoamarillo.demo.posts.model.Post
+import com.rolandoamarillo.demo.posts.model.User
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_post_detail.*
 import javax.inject.Inject
@@ -44,13 +47,32 @@ class DetailPostActivity : AppCompatActivity(), DetailPostContract.DetailPostVie
 
         titleTextView.text = post.title
         bodyTextView.text = post.body
+
+        userProgress.visibility = View.VISIBLE
+        userLayout.visibility = View.INVISIBLE
+
+        presenter.readPost(post)
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
+        if (post.favorite) {
+            menuInflater.inflate(R.menu.menu_detail_post_unfavorite, menu)
+        } else {
+            menuInflater.inflate(R.menu.menu_detail_post_favorite, menu)
+        }
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.clear()
+        if (post.favorite) {
+            menuInflater.inflate(R.menu.menu_detail_post_unfavorite, menu)
+        } else {
+            menuInflater.inflate(R.menu.menu_detail_post_favorite, menu)
+        }
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -59,7 +81,9 @@ class DetailPostActivity : AppCompatActivity(), DetailPostContract.DetailPostVie
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
-        if (id == R.id.action_refresh) {
+        if (id == R.id.action_favorite) {
+            presenter.toggleFavorite(post)
+            invalidateOptionsMenu()
             return true
         }
 
@@ -69,6 +93,7 @@ class DetailPostActivity : AppCompatActivity(), DetailPostContract.DetailPostVie
     override fun onStart() {
         super.onStart()
         presenter.subscribe(this)
+        post.userId?.let { presenter.getUser(it) }
     }
 
     override fun onDestroy() {
@@ -76,12 +101,17 @@ class DetailPostActivity : AppCompatActivity(), DetailPostContract.DetailPostVie
         super.onDestroy()
     }
 
-    override fun onUserRetrieved() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onUserRetrieved(user: User) {
+        userNameTextView.text = getString(R.string.user_name, user.name)
+        userEmailTextView.text = getString(R.string.user_email, user.email)
+        userPhoneTextView.text = getString(R.string.user_phone, user.phone)
+        userWebsiteTextView.text = getString(R.string.user_website, user.website)
+        userProgress.visibility = View.GONE
+        userLayout.visibility = View.VISIBLE
     }
 
     override fun onUserError(throwable: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this, R.string.generic_error, Toast.LENGTH_SHORT).show()
     }
 
     override fun onCommentsRetrieved() {
@@ -89,6 +119,6 @@ class DetailPostActivity : AppCompatActivity(), DetailPostContract.DetailPostVie
     }
 
     override fun onCommentsError(throwable: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        Toast.makeText(this, R.string.generic_error, Toast.LENGTH_SHORT).show()
     }
 }

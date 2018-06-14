@@ -3,10 +3,8 @@ package com.rolandoamarillo.demo.posts
 import android.content.Context
 import android.support.annotation.NonNull
 import com.rolandoamarillo.demo.posts.api.PostsApi
-import com.rolandoamarillo.demo.posts.repository.PostsLocalDataSource
-import com.rolandoamarillo.demo.posts.repository.PostsLocalRepository
-import com.rolandoamarillo.demo.posts.repository.PostsRemoteDataSource
-import com.rolandoamarillo.demo.posts.repository.PostsRemoteRepository
+import com.rolandoamarillo.demo.posts.api.UserApi
+import com.rolandoamarillo.demo.posts.repository.*
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -54,5 +52,17 @@ class ApplicationModule(val context: Context) {
     @Provides
     fun providePostsLocalDataSource(): PostsLocalDataSource {
         return PostsLocalRepository()
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserApi(retrofit: Retrofit): UserApi {
+        return retrofit.create(UserApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserRemoteDataSource(userApi: UserApi): UserRemoteDataSource {
+        return UserRemoteRepository(userApi)
     }
 }

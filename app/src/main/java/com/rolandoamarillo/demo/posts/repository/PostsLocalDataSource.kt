@@ -13,4 +13,6 @@ interface PostsLocalDataSource {
 
     fun clearPosts()
 
+    fun savePost(post: Post)
+
 }

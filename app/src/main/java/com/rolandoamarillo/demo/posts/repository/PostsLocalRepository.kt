@@ -29,15 +29,32 @@ class PostsLocalRepository : PostsLocalDataSource {
     }
 
     override fun clearPosts() {
-        val realm = Realm.getDefaultInstance()
+        var realm = Realm.getDefaultInstance()
         realm.executeTransaction({ realm.delete(Post::class.java) })
-        this.posts?.clear()
+        realm = Realm.getDefaultInstance()
+        val query = realm.where(Post::class.java)
+        val results = query.findAll()
+        posts = results
     }
 
     override fun needsRefresh(): Boolean {
         posts?.let {
-            getPosts()
+            val realm = Realm.getDefaultInstance()
+            val query = realm.where(Post::class.java)
+            val results = query.findAll()
+            if (results.isNotEmpty()) {
+                posts = results
+            }
         }
         return posts == null
+    }
+
+    override fun savePost(post: Post) {
+        var realm = Realm.getDefaultInstance()
+        realm.executeTransaction({ realm.insertOrUpdate(post) })
+        realm = Realm.getDefaultInstance()
+        val query = realm.where(Post::class.java)
+        val results = query.findAll()
+        posts = results
     }
 }

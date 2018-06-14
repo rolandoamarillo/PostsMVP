@@ -11,6 +11,13 @@
 
     <string name="generic_error">There was an error while doing some stuff</string>
 
+    <string name="user">User</string>
+    <string name="user_name">Name: %1$s</string>
+    <string name="user_email">Email: %1$s</string>
+    <string name="user_phone">Phone: %1$s</string>
+    <string name="user_website">Website: %1$s</string>
 
+    <string name="remove_favorite">Remove Favorite</string>
+    <string name="add_favorite">Add Favorite</string>
 
 </resources>
