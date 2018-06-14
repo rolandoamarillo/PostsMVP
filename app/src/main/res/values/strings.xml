@@ -1,0 +1,16 @@
+<resources>
+
+    <string name="app_name">Posts</string>
+
+    <string name="base_url">https://jsonplaceholder.typicode.com/</string>
+
+    <string name="tab_text_1">All</string>
+    <string name="tab_text_2">Favorites</string>
+
+    <string name="refresh">Refresh</string>
+
+    <string name="generic_error">There was an error while doing some stuff</string>
+
+
+
+</resources>
