@@ -35,6 +35,13 @@ class AllPostListPresenterTest {
         view = Mockito.mock(AllPostListContract.AllPostListView::class.java)
 
         presenter = AllPostsListPresenter(postRemoteDataSource, postsLocalDataSource, mainPresenter)
+
+
+        val list = emptyList<Post>()
+        `when`(postsLocalDataSource.needsRefresh()).thenReturn(false)
+        `when`(postsLocalDataSource.getPosts()).thenReturn(Observable.just(list.toMutableList()))
+        `when`(postRemoteDataSource.getPosts()).thenReturn(Observable.just(list))
+
         presenter.subscribe(view)
     }
 
@@ -45,7 +52,6 @@ class AllPostListPresenterTest {
 
     @Test
     fun removePostTest() {
-        //TODO Fix this test
         val id = random.nextInt()
         val list = emptyList<Post>()
         `when`(postsLocalDataSource.needsRefresh()).thenReturn(false)
@@ -57,7 +63,6 @@ class AllPostListPresenterTest {
 
     @Test
     fun removePostErrorTest() {
-        //TODO Fix this test
         val id = random.nextInt()
         val list = emptyList<Post>()
         `when`(postsLocalDataSource.needsRefresh()).thenReturn(true)
