@@ -9,17 +9,24 @@ import io.reactivex.disposables.CompositeDisposable
 class FavoritesPostListPresenter(private val postsRemoteDataSource: PostsRemoteDataSource,
                                  private val postsLocalDataSource: PostsLocalDataSource, private val mainPresenter: MainContract.MainPresenter) : FavoritesPostsListContract.FavoritesListPresenter {
 
-    private val compositeDisposable = CompositeDisposable()
+    private var compositeDisposable: CompositeDisposable? = null
 
     var view: FavoritesPostsListContract.FavoritesPostListView? = null
 
     override fun subscribe(view: FavoritesPostsListContract.FavoritesPostListView) {
         this.view = view
+        compositeDisposable = CompositeDisposable()
         getFavoritesPosts()
     }
 
     override fun unsubscribe() {
         this.view = null
+        compositeDisposable?.let {
+            if (!compositeDisposable!!.isDisposed) {
+                compositeDisposable?.dispose()
+            }
+            compositeDisposable = null
+        }
     }
 
     override fun getFavoritesPosts() {
@@ -44,7 +51,7 @@ class FavoritesPostListPresenter(private val postsRemoteDataSource: PostsRemoteD
             it.printStackTrace()
             view?.onPostsError(it)
         })
-        compositeDisposable.add(disposable)
+        compositeDisposable!!.add(disposable)
     }
 
     override fun removePost(id: Int) {

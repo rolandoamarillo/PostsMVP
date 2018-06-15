@@ -9,17 +9,24 @@ import io.reactivex.disposables.CompositeDisposable
 class AllPostsListPresenter(private val postsRemoteDataSource: PostsRemoteDataSource,
                             private val postsLocalDataSource: PostsLocalDataSource, private val mainPresenter: MainContract.MainPresenter) : AllPostListContract.AllPostListPresenter {
 
-    private val compositeDisposable = CompositeDisposable()
+    private var compositeDisposable: CompositeDisposable? = null
 
     var view: AllPostListContract.AllPostListView? = null
 
     override fun subscribe(view: AllPostListContract.AllPostListView) {
         this.view = view
+        compositeDisposable = CompositeDisposable()
         getPosts()
     }
 
     override fun unsubscribe() {
         this.view = null
+        compositeDisposable?.let {
+            if (!compositeDisposable!!.isDisposed) {
+                compositeDisposable?.dispose()
+            }
+            compositeDisposable = null
+        }
     }
 
     override fun getPosts() {
@@ -36,7 +43,7 @@ class AllPostsListPresenter(private val postsRemoteDataSource: PostsRemoteDataSo
             it.printStackTrace()
             view?.onPostsError(it)
         })
-        compositeDisposable.add(disposable)
+        compositeDisposable!!.add(disposable)
     }
 
     override fun removePost(id: Int) {
