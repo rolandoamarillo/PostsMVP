@@ -1,4 +1,4 @@
-package com.rolandoamarillo.demo.posts.fragments.posts.all
+package com.rolandoamarillo.demo.posts.fragments.posts.favorites
 
 import com.rolandoamarillo.demo.posts.activities.main.MainContract
 import com.rolandoamarillo.demo.posts.model.Post
@@ -12,9 +12,9 @@ import org.mockito.Mockito
 import org.mockito.Mockito.*
 import java.util.*
 
-class AllPostListPresenterTest {
+class FavoritesPostListPresenterTest {
 
-    lateinit var presenter: AllPostsListPresenter
+    lateinit var presenter: FavoritesPostListPresenter
 
     lateinit var postRemoteDataSource: PostsRemoteDataSource
 
@@ -22,7 +22,7 @@ class AllPostListPresenterTest {
 
     lateinit var mainPresenter: MainContract.MainPresenter
 
-    lateinit var view: AllPostListContract.AllPostListView
+    lateinit var view: FavoritesPostsListContract.FavoritesPostListView
 
     val random = Random()
 
@@ -31,9 +31,9 @@ class AllPostListPresenterTest {
         postRemoteDataSource = Mockito.mock(PostsRemoteDataSource::class.java)
         postsLocalDataSource = Mockito.mock(PostsLocalDataSource::class.java)
         mainPresenter = Mockito.mock(MainContract.MainPresenter::class.java)
-        view = Mockito.mock(AllPostListContract.AllPostListView::class.java)
+        view = Mockito.mock(FavoritesPostsListContract.FavoritesPostListView::class.java)
 
-        presenter = AllPostsListPresenter(postRemoteDataSource, postsLocalDataSource, mainPresenter)
+        presenter = FavoritesPostListPresenter(postRemoteDataSource, postsLocalDataSource, mainPresenter)
 
 
         val list = emptyList<Post>()
@@ -63,7 +63,7 @@ class AllPostListPresenterTest {
         `when`(postsLocalDataSource.needsRefresh()).thenReturn(true)
         `when`(postRemoteDataSource.getPosts()).thenReturn(Observable.just(list))
 
-        presenter.getPosts()
+        presenter.getFavoritesPosts()
         verify(postsLocalDataSource, atLeastOnce()).savePosts(list.toMutableList())
         verify(view, atLeastOnce()).onPostsLoaded(list)
     }
@@ -74,7 +74,7 @@ class AllPostListPresenterTest {
         `when`(postsLocalDataSource.needsRefresh()).thenReturn(true)
         `when`(postRemoteDataSource.getPosts()).thenReturn(Observable.error(throwable))
 
-        presenter.getPosts()
+        presenter.getFavoritesPosts()
         verify(view).onPostsError(throwable)
     }
 
