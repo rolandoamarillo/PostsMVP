@@ -9,11 +9,15 @@ interface MainContract {
         fun onPostsCleared()
 
         fun onPostsReloaded()
+
+        fun resetView()
     }
 
     interface MainPresenter : BasePresenter<MainView> {
         fun clearPosts()
 
         fun reloadPosts()
+
+        fun resetView()
     }
 }

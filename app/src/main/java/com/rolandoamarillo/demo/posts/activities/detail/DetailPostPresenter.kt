@@ -1,12 +1,15 @@
 package com.rolandoamarillo.demo.posts.activities.detail
 
 import com.rolandoamarillo.demo.posts.model.Post
+import com.rolandoamarillo.demo.posts.repository.CommentsRemoteDataSource
 import com.rolandoamarillo.demo.posts.repository.PostsLocalDataSource
 import com.rolandoamarillo.demo.posts.repository.PostsRemoteDataSource
 import com.rolandoamarillo.demo.posts.repository.UserRemoteDataSource
 import io.reactivex.disposables.CompositeDisposable
 
-class DetailPostPresenter(private val userRemoteDataSource: UserRemoteDataSource, private val postsLocalDataSource: PostsLocalDataSource) :
+class DetailPostPresenter(private val userRemoteDataSource: UserRemoteDataSource,
+                          private val postsLocalDataSource: PostsLocalDataSource,
+                          private val commentsRemoteDataSource: CommentsRemoteDataSource) :
         DetailPostContract.DetailPostPresenter {
 
     private val compositeDisposable = CompositeDisposable()
@@ -24,12 +27,13 @@ class DetailPostPresenter(private val userRemoteDataSource: UserRemoteDataSource
     override fun getUser(userId: Int) {
         val disposable = userRemoteDataSource.getUser(userId)
                 .subscribe({ view?.onUserRetrieved(it) }, { view?.onUserError(it) })
-        compositeDisposable.clear()
         compositeDisposable.add(disposable)
     }
 
-    override fun getComments() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun getComments(postId: Int) {
+        val disposable = commentsRemoteDataSource.getComments(postId)
+                .subscribe({ view?.onCommentsRetrieved(it) }, { view?.onCommentsError(it) })
+        compositeDisposable.add(disposable)
     }
 
     override fun toggleFavorite(post: Post) {

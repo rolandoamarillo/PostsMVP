@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity(), MainContract.MainView, HasSupportFragm
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
         // Set up the ViewPager with the sections adapter.
+
         container.adapter = mSectionsPagerAdapter
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
@@ -88,6 +89,10 @@ class MainActivity : AppCompatActivity(), MainContract.MainView, HasSupportFragm
     }
 
     override fun onPostsReloaded() {
+        mSectionsPagerAdapter?.notifyDataSetChanged()
+    }
+
+    override fun resetView() {
         mSectionsPagerAdapter?.notifyDataSetChanged()
     }
 }

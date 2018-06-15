@@ -32,6 +32,10 @@ class PostsAdapter(private val postClickListener: PostClickListener) : RecyclerV
         notifyDataSetChanged()
     }
 
+    fun getPost(position: Int): Post {
+        return items[position]
+    }
+
     class PostViewHolder(override val containerView: View, private val postClickListener: PostClickListener) : RecyclerView.ViewHolder(containerView), LayoutContainer {
         fun bind(post: Post) {
             containerView.tag = post
@@ -53,6 +57,11 @@ class PostsAdapter(private val postClickListener: PostClickListener) : RecyclerV
                 }
             }
         }
+    }
+
+    fun removeAt(position: Int) {
+        items.removeAt(position)
+        notifyItemRemoved(position)
     }
 
     interface PostClickListener {

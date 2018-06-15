@@ -2,6 +2,7 @@ package com.rolandoamarillo.demo.posts.activities.detail
 
 import com.rolandoamarillo.demo.posts.BasePresenter
 import com.rolandoamarillo.demo.posts.BaseView
+import com.rolandoamarillo.demo.posts.model.Comment
 import com.rolandoamarillo.demo.posts.model.Post
 import com.rolandoamarillo.demo.posts.model.User
 
@@ -13,7 +14,7 @@ interface DetailPostContract {
 
         fun onUserError(throwable: Throwable)
 
-        fun onCommentsRetrieved()
+        fun onCommentsRetrieved(comments: List<Comment>)
 
         fun onCommentsError(throwable: Throwable)
     }
@@ -22,7 +23,7 @@ interface DetailPostContract {
 
         fun getUser(userId: Int)
 
-        fun getComments()
+        fun getComments(postId: Int)
 
         fun toggleFavorite(post: Post)
 

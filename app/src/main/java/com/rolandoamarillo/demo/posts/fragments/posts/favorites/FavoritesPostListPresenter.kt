@@ -1,12 +1,13 @@
 package com.rolandoamarillo.demo.posts.fragments.posts.favorites
 
+import com.rolandoamarillo.demo.posts.activities.main.MainContract
 import com.rolandoamarillo.demo.posts.model.Post
 import com.rolandoamarillo.demo.posts.repository.PostsLocalDataSource
 import com.rolandoamarillo.demo.posts.repository.PostsRemoteDataSource
 import io.reactivex.disposables.CompositeDisposable
 
 class FavoritesPostListPresenter(private val postsRemoteDataSource: PostsRemoteDataSource,
-                                 private val postsLocalDataSource: PostsLocalDataSource) : FavoritesPostsListContract.FavoritesListPresenter {
+                                 private val postsLocalDataSource: PostsLocalDataSource, private val mainPresenter: MainContract.MainPresenter) : FavoritesPostsListContract.FavoritesListPresenter {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -46,4 +47,8 @@ class FavoritesPostListPresenter(private val postsRemoteDataSource: PostsRemoteD
         compositeDisposable.add(disposable)
     }
 
+    override fun removePost(id: Int) {
+        postsLocalDataSource.deletePost(id)
+        mainPresenter.resetView()
+    }
 }

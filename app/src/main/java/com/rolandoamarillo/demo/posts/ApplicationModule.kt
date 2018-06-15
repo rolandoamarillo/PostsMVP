@@ -2,6 +2,7 @@ package com.rolandoamarillo.demo.posts
 
 import android.content.Context
 import android.support.annotation.NonNull
+import com.rolandoamarillo.demo.posts.api.CommentApi
 import com.rolandoamarillo.demo.posts.api.PostsApi
 import com.rolandoamarillo.demo.posts.api.UserApi
 import com.rolandoamarillo.demo.posts.repository.*
@@ -65,4 +66,17 @@ class ApplicationModule(val context: Context) {
     fun provideUserRemoteDataSource(userApi: UserApi): UserRemoteDataSource {
         return UserRemoteRepository(userApi)
     }
+
+    @Singleton
+    @Provides
+    fun provideCommentApi(retrofit: Retrofit): CommentApi {
+        return retrofit.create(CommentApi::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun proviceCommentRemoteDataSource(commentApi: CommentApi): CommentsRemoteDataSource {
+        return CommentsRemoteRepository(commentApi)
+    }
+
 }

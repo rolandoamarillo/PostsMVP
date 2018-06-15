@@ -18,6 +18,8 @@ interface FavoritesPostsListContract {
 
     interface FavoritesListPresenter : BasePresenter<FavoritesPostListView> {
         fun getFavoritesPosts()
+
+        fun removePost(id: Int)
     }
 
 }

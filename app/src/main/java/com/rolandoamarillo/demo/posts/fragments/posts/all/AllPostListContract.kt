@@ -18,6 +18,8 @@ interface AllPostListContract {
 
     interface AllPostListPresenter : BasePresenter<AllPostListView> {
         fun getPosts()
+
+        fun removePost(id: Int)
     }
 
 }

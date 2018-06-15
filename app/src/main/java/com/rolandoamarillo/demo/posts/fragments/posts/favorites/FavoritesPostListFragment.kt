@@ -3,7 +3,10 @@ package com.rolandoamarillo.demo.posts.fragments.posts.favorites
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +14,7 @@ import com.rolandoamarillo.demo.posts.R
 import com.rolandoamarillo.demo.posts.activities.detail.DetailPostActivity
 import com.rolandoamarillo.demo.posts.fragments.posts.adapter.PostsAdapter
 import com.rolandoamarillo.demo.posts.model.Post
+import com.rolandoamarillo.demo.posts.util.SwipeToDeleteCallback
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_favorites_posts.*
 import javax.inject.Inject
@@ -48,6 +52,7 @@ class FavoritesPostListFragment : Fragment(), FavoritesPostsListContract.Favorit
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        recyclerView.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = linearLayoutManager
@@ -57,6 +62,19 @@ class FavoritesPostListFragment : Fragment(), FavoritesPostsListContract.Favorit
         progressView.visibility = View.VISIBLE
         errorMessageTextView.visibility = View.GONE
         recyclerView.visibility = View.GONE
+
+        val swipeHandler = object : SwipeToDeleteCallback(context!!) {
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val adapter = recyclerView.adapter as PostsAdapter
+                val position = viewHolder.adapterPosition
+                val post = adapter.getPost(position)
+                val id = post.id
+                adapter.removeAt(position)
+                id?.let { presenter.removePost(it) }
+            }
+        }
+        val itemTouchHelper = ItemTouchHelper(swipeHandler)
+        itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
     override fun onStart() {

@@ -15,4 +15,6 @@ interface PostsLocalDataSource {
 
     fun savePost(post: Post)
 
+    fun deletePost(id: Int)
+
 }

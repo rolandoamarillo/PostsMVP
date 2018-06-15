@@ -4,7 +4,8 @@ import com.rolandoamarillo.demo.posts.repository.PostsLocalDataSource
 import com.rolandoamarillo.demo.posts.repository.PostsRemoteDataSource
 import io.reactivex.disposables.CompositeDisposable
 
-class MainPresenter(private val postsRemoteDataSource: PostsRemoteDataSource, private val postsLocalDataSource: PostsLocalDataSource) : MainContract.MainPresenter {
+class MainPresenter(private val postsRemoteDataSource: PostsRemoteDataSource,
+                    private val postsLocalDataSource: PostsLocalDataSource) : MainContract.MainPresenter {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -32,5 +33,9 @@ class MainPresenter(private val postsRemoteDataSource: PostsRemoteDataSource, pr
             view?.onPostsReloaded()
         })
         compositeDisposable.add(disposable)
+    }
+
+    override fun resetView() {
+        view?.resetView()
     }
 }

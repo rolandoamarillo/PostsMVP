@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.rolandoamarillo.demo.posts.R
+import com.rolandoamarillo.demo.posts.model.Comment
 import com.rolandoamarillo.demo.posts.model.Post
 import com.rolandoamarillo.demo.posts.model.User
 import dagger.android.AndroidInjection
@@ -85,6 +88,8 @@ class DetailPostActivity : AppCompatActivity(), DetailPostContract.DetailPostVie
             presenter.toggleFavorite(post)
             invalidateOptionsMenu()
             return true
+        } else if (id == android.R.id.home) {
+            onBackPressed()
         }
 
         return super.onOptionsItemSelected(item)
@@ -94,6 +99,7 @@ class DetailPostActivity : AppCompatActivity(), DetailPostContract.DetailPostVie
         super.onStart()
         presenter.subscribe(this)
         post.userId?.let { presenter.getUser(it) }
+        post.id?.let { presenter.getComments(it) }
     }
 
     override fun onDestroy() {
@@ -114,8 +120,17 @@ class DetailPostActivity : AppCompatActivity(), DetailPostContract.DetailPostVie
         Toast.makeText(this, R.string.generic_error, Toast.LENGTH_SHORT).show()
     }
 
-    override fun onCommentsRetrieved() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onCommentsRetrieved(comments: List<Comment>) {
+        commentsLayout.removeAllViews()
+        val inflater = LayoutInflater.from(this)
+        for (comment in comments) {
+            val view = inflater.inflate(R.layout.comment_row, commentsLayout, false)
+            val nameTextView = view.findViewById<TextView>(R.id.nameTextView)
+            nameTextView.text = comment.name
+            val bodyTextView = view.findViewById<TextView>(R.id.bodyTextView)
+            bodyTextView.text = comment.body
+            commentsLayout.addView(view)
+        }
     }
 
     override fun onCommentsError(throwable: Throwable) {

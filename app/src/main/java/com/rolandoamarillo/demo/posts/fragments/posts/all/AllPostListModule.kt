@@ -12,8 +12,8 @@ class AllPostListModule {
 
     @FragmentScoped
     @Provides
-    fun provideAllPostsListPresenter(postsRemoteDataSource: PostsRemoteDataSource, postsLocalDataSource: PostsLocalDataSource): AllPostListContract.AllPostListPresenter {
-        return AllPostsListPresenter(postsRemoteDataSource, postsLocalDataSource)
+    fun provideAllPostsListPresenter(postsRemoteDataSource: PostsRemoteDataSource, postsLocalDataSource: PostsLocalDataSource, mainPresenter: MainContract.MainPresenter): AllPostListContract.AllPostListPresenter {
+        return AllPostsListPresenter(postsRemoteDataSource, postsLocalDataSource, mainPresenter)
     }
 
 }

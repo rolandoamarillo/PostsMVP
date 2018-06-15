@@ -1,11 +1,13 @@
 package com.rolandoamarillo.demo.posts.fragments.posts.all
 
+import com.rolandoamarillo.demo.posts.activities.main.MainContract
+import com.rolandoamarillo.demo.posts.model.Post
 import com.rolandoamarillo.demo.posts.repository.PostsLocalDataSource
 import com.rolandoamarillo.demo.posts.repository.PostsRemoteDataSource
 import io.reactivex.disposables.CompositeDisposable
 
 class AllPostsListPresenter(private val postsRemoteDataSource: PostsRemoteDataSource,
-                            private val postsLocalDataSource: PostsLocalDataSource) : AllPostListContract.AllPostListPresenter {
+                            private val postsLocalDataSource: PostsLocalDataSource, private val mainPresenter: MainContract.MainPresenter) : AllPostListContract.AllPostListPresenter {
 
     private val compositeDisposable = CompositeDisposable()
 
@@ -37,4 +39,8 @@ class AllPostsListPresenter(private val postsRemoteDataSource: PostsRemoteDataSo
         compositeDisposable.add(disposable)
     }
 
+    override fun removePost(id: Int) {
+        postsLocalDataSource.deletePost(id)
+        mainPresenter.resetView()
+    }
 }

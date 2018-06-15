@@ -3,6 +3,7 @@ package com.rolandoamarillo.demo.posts.repository
 import com.rolandoamarillo.demo.posts.model.Post
 import io.reactivex.Observable
 import io.realm.Realm
+import io.realm.Sort
 
 
 class PostsLocalRepository : PostsLocalDataSource {
@@ -15,7 +16,7 @@ class PostsLocalRepository : PostsLocalDataSource {
         }
         val realm = Realm.getDefaultInstance()
         val query = realm.where(Post::class.java)
-        val results = query.findAll()
+        val results = query.findAll().sort("id", Sort.ASCENDING)
         posts = results
         return Observable.just(results)
     }
@@ -33,7 +34,7 @@ class PostsLocalRepository : PostsLocalDataSource {
         realm.executeTransaction({ realm.delete(Post::class.java) })
         realm = Realm.getDefaultInstance()
         val query = realm.where(Post::class.java)
-        val results = query.findAll()
+        val results = query.findAll().sort("id", Sort.ASCENDING)
         posts = results
     }
 
@@ -41,7 +42,7 @@ class PostsLocalRepository : PostsLocalDataSource {
         posts?.let {
             val realm = Realm.getDefaultInstance()
             val query = realm.where(Post::class.java)
-            val results = query.findAll()
+            val results = query.findAll().sort("id", Sort.ASCENDING)
             if (results.isNotEmpty()) {
                 posts = results
             }
@@ -54,7 +55,21 @@ class PostsLocalRepository : PostsLocalDataSource {
         realm.executeTransaction({ realm.insertOrUpdate(post) })
         realm = Realm.getDefaultInstance()
         val query = realm.where(Post::class.java)
-        val results = query.findAll()
+        val results = query.findAll().sort("id", Sort.ASCENDING)
+        posts = results
+    }
+
+    override fun deletePost(id: Int) {
+        var realm = Realm.getDefaultInstance()
+        realm.executeTransaction({
+            val result = realm.where(Post::class.java).equalTo("id", id).findAll().sort("id", Sort.ASCENDING)
+            if (result.isNotEmpty()) {
+                result.deleteAllFromRealm()
+            }
+        })
+        realm = Realm.getDefaultInstance()
+        val query = realm.where(Post::class.java)
+        val results = query.findAll().sort("id", Sort.ASCENDING)
         posts = results
     }
 }

@@ -9,6 +9,8 @@
 
     <string name="refresh">Refresh</string>
 
+    <string name="comments">Comments</string>
+
     <string name="generic_error">There was an error while doing some stuff</string>
 
     <string name="user">User</string>
